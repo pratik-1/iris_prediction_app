@@ -1,4 +1,4 @@
-# Penguins web app deployed on Heroku
+# Iris prediction web app deployed on Heroku
 
 
 This web app predicts the species of *iris flower*
