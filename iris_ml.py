@@ -12,11 +12,12 @@ from bokeh.models import ColumnDataSource
 from bokeh.models import CategoricalColorMapper
 
 
+
+st.set_page_config(page_title='Iris App', page_icon='🌸', layout="centered",
+                   initial_sidebar_state="auto")
 st.write("""
 # Iris Flower Prediction App
- This app predicts the **Iris flower** type!
- 
- The data is obtained from [iris dataset](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html#sklearn.datasets.load_iris)
+ This app predicts the **Iris flower** type! The data is obtained from [iris dataset](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html#sklearn.datasets.load_iris)
 """)
 
 st.sidebar.header('User Input Parameters')
@@ -62,12 +63,21 @@ load_clf = pickle.load(open('iris_clf.pckl','rb'))
 prediction = load_clf.predict(df)
 prediction_probs = load_clf.predict_proba(df)
 
-st.subheader('Prediction')
-prediction_target = np.array(['setosa', 'versicolor', 'virginica'])
-st.write(prediction_target[prediction])
 
-st.subheader('Prediction Probability')
-st.write(prediction_probs)
+prediction_target = np.array(['setosa', 'versicolor', 'virginica'])
+pr = {'Predicted-Flower': prediction_target[prediction],
+                'Setosa-Prob': prediction_probs[0,0],
+                'Versicolor-Prob': prediction_probs[0,1],
+                'Virginica-Prob': prediction_probs[0, 2]}
+predis = pd.DataFrame(pr, index=[0])
+st.write(predis)
+
+# st.subheader('Prediction')
+# prediction_target = np.array(['setosa', 'versicolor', 'virginica'])
+# st.write(prediction_target[prediction])
+#
+# st.subheader('Prediction Probability')
+# st.write(prediction_probs)
 
 
 def draw_plots_layouts(df, input_features):
@@ -85,7 +95,7 @@ def draw_plots_layouts(df, input_features):
               color=dict(field='species1', transform=color_mapper))
     p2.circle(input_features['petal_length'], input_features['petal_width'], size=10, color='yellow',
               legend_label='input feature')
-    p2.legend.location = 'bottom_right'
+    # p2.legend.location = 'bottom_right'
 
     p3 = figure(x_axis_label='Sepal Length', y_axis_label='Petal Length', tools='box_select,lasso_select')
     p3.circle('sepal_length', 'petal_length', size=8, source=source, legend_field='species1',
@@ -99,7 +109,7 @@ def draw_plots_layouts(df, input_features):
               color=dict(field='species1', transform=color_mapper))
     p4.circle(input_features['sepal_width'], input_features['petal_width'], size=10, color='yellow',
               legend_label='input feature')
-    p4.legend.location = 'center_right'
+    # p4.legend.location = 'center_right'
     p1.x_range = p3.x_range
     p2.x_range = p4.x_range
     p1.y_range = p2.y_range = p3.y_range = p4.y_range
@@ -114,7 +124,7 @@ def draw_plots_layouts(df, input_features):
     # Grid Layout
     row1 = [p1, p2]
     row2 = [p3, p4]
-    layout = gridplot([row1, row2])
+    layout = gridplot([row1, row2], sizing_mode='scale_both')
 
     # show(layout)
     st.bokeh_chart(layout, use_container_width=True)
