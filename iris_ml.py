@@ -21,10 +21,11 @@ st.write("""
 """)
 
 st.sidebar.header('User Input Parameters')
+
+
+uploaded_file = st.sidebar.file_uploader('Input feature using CSV file', type='csv')
 with open('data/iris_example_set.csv') as f:
    st.sidebar.download_button('Example input CSV file', f)
-
-uploaded_file = st.sidebar.file_uploader('Upload the input CSV file', type='csv')
 if uploaded_file is not None:
     input_features = pd.read_csv(uploaded_file)
 else:
@@ -39,6 +40,10 @@ else:
                 'petal_width': petal_width}
         features = pd.DataFrame(data, index=[0])
         return features
+
+
+    st.sidebar.subheader('OR')
+    st.sidebar.text("Input feature using sliders")
     input_features = user_input_features()
 
 
@@ -70,6 +75,7 @@ pr = {'Predicted-Flower': prediction_target[prediction],
                 'Versicolor-Prob': prediction_probs[0,1],
                 'Virginica-Prob': prediction_probs[0, 2]}
 predis = pd.DataFrame(pr, index=[0])
+st.subheader('Predictions')
 st.write(predis)
 
 # st.subheader('Prediction')
@@ -130,5 +136,5 @@ def draw_plots_layouts(df, input_features):
     st.bokeh_chart(layout, use_container_width=True)
 
 
-st.subheader('Visualisations')
+st.subheader('Visualisation')
 draw_plots_layouts(iris1, input_features)
